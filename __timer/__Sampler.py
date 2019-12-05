@@ -4,6 +4,7 @@ import MyPy.__files as files
 from threading import Lock
 import time
 from matplotlib import pyplot as plt
+from MyPy.__calendar import today
 
 class Sampler:
 
@@ -41,9 +42,11 @@ class Sampler:
 
     def save(self, S, Tf, Ts):
         path = files.assure_path(self.__saving_folder_path)
-        path = os.path.join(path, '{}_{}_{}.{}'.format(self.__default_file_name, Ts, Tf, self.__default_file_ext))
+        path = os.path.join(path, '{}_{}.{}'.format(self.__default_file_name, 
+            str(today()).replace('.', '_'), self.__default_file_ext))
+        plt.figure()
         plt.plot(S)
-        plt.title('{} - {} @ {}s'.format(Ts, Tf, self.__sampling_time))
+        plt.title('{}-{}@{}s'.format(int(Ts), int(Tf), self.__sampling_time))
         plt.savefig(path)
 
     def timestamp(self):
@@ -59,10 +62,11 @@ class Sampler:
         self.__lock.acquire()
         Tf = self.timestamp()
         S = self.__S.copy()
+        self.__S = []
         Ts = self.__Ts
-        self.__lock.release()
-        self.__Ts = Tf
         self.save(S, Tf, Ts)
+        self.__Ts = Tf
+        self.__lock.release()
 
 import numpy as np
 
