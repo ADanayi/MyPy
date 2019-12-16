@@ -1,2 +1,2 @@
 from .__path import assure_path
-from .__read import goodlines
+from .__read import goodlines, read_goodlines
